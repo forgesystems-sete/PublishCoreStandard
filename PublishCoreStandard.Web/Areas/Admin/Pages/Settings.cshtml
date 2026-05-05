@@ -1,0 +1,17 @@
+@page "/Admin/Settings"
+@model PublishCoreStandard.Web.Areas.Admin.Pages.SettingsModel
+@{
+    ViewData["Title"] = "Site Settings";
+}
+<h1>Site Settings</h1>
+<form method="post">
+    <div class="form-group"><label asp-for="Settings.SiteName"></label><input asp-for="Settings.SiteName" class="form-control" /></div>
+    <div class="form-group"><label asp-for="Settings.Tagline"></label><input asp-for="Settings.Tagline" class="form-control" /></div>
+    <div class="form-group"><label asp-for="Settings.AuthorName"></label><input asp-for="Settings.AuthorName" class="form-control" /></div>
+    <div class="form-group"><label asp-for="Settings.ThemeColor"></label><input asp-for="Settings.ThemeColor" class="form-control" type="color" /></div>
+    <div class="form-group"><label asp-for="Settings.AccentColor"></label><input asp-for="Settings.AccentColor" class="form-control" type="color" /></div>
+    <div class="form-group"><label asp-for="Settings.FooterText"></label><input asp-for="Settings.FooterText" class="form-control" /></div>
+    <div class="form-group"><label asp-for="Settings.PostsPerPage"></label><input asp-for="Settings.PostsPerPage" class="form-control" type="number" /></div>
+    <button type="submit" class="btn btn--primary">Save Settings</button>
+</form>
+

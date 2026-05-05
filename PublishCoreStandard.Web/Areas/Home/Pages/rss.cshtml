@@ -1,0 +1,63 @@
+@page "/rss"
+@model PublishCoreStandard.Web.Areas.Home.Pages.RssModel
+@{
+    Layout = null;
+    Response.ContentType = "application/rss+xml";
+
+    var settings = new System.Xml.XmlWriterSettings
+    {
+        Indent = true,
+        Encoding = System.Text.Encoding.UTF8,
+        Async = true
+    };
+
+    using var writer = System.Xml.XmlWriter.Create(Response.Body, settings);
+    await writer.WriteStartDocumentAsync();
+
+    // <rss>
+    await writer.WriteStartElementAsync(null, "rss", "http://www.w3.org/2005/Atom");
+    await writer.WriteAttributeStringAsync(null, "version", null, "2.0");
+    await writer.WriteAttributeStringAsync(null, "xmlns", "atom", "http://www.w3.org/2005/Atom");
+
+    // <channel>
+    await writer.WriteStartElementAsync(null, "channel", null);
+
+    await writer.WriteElementStringAsync(null, "title", null, Model.SiteSettings.SiteName);
+    await writer.WriteElementStringAsync(null, "link", null, Model.BaseUrl);
+    await writer.WriteElementStringAsync(null, "description", null, Model.SiteSettings.Tagline);
+
+    // <atom:link>
+    await writer.WriteStartElementAsync("atom", "link", null);
+    await writer.WriteAttributeStringAsync(null, "href", null, $"{Model.BaseUrl}/rss");
+    await writer.WriteAttributeStringAsync(null, "rel", null, "self");
+    await writer.WriteAttributeStringAsync(null, "type", null, "application/rss+xml");
+    await writer.WriteEndElementAsync(); // </atom:link>
+
+    foreach (var post in Model.Posts)
+    {
+        // <item>
+        await writer.WriteStartElementAsync(null, "item", null);
+
+        await writer.WriteElementStringAsync(null, "title", null, post.Title);
+        await writer.WriteElementStringAsync(null, "link", null, $"{Model.BaseUrl}/posts/{post.Slug}");
+        await writer.WriteElementStringAsync(null, "description", null, post.Excerpt);
+        await writer.WriteElementStringAsync(null, "pubDate", null, post.PublishedDate.ToString("R"));
+
+        // <guid>
+        await writer.WriteStartElementAsync(null, "guid", null);
+        await writer.WriteAttributeStringAsync(null, "isPermaLink", null, "true");
+        await writer.WriteStringAsync($"{Model.BaseUrl}/posts/{post.Slug}");
+        await writer.WriteEndElementAsync(); // </guid>
+
+        foreach (var tag in post.Tags)
+        {
+            await writer.WriteElementStringAsync(null, "category", null, tag);
+        }
+
+        await writer.WriteEndElementAsync(); // </item>
+    }
+
+    await writer.WriteEndElementAsync(); // </channel>
+    await writer.WriteEndElementAsync(); // </rss>
+    await writer.WriteEndDocumentAsync();
+}

@@ -1,0 +1,40 @@
+@startuml
+!define RECTANGLE class
+skinparam componentStyle rectangle
+skinparam BackgroundColor #FEFEFE
+title PublishCore Standard — Clean Architecture
+
+package "Domain" #C8E6C9 {
+    [Entities] as DomainEntities
+    [Interfaces] as DomainInterfaces
+}
+
+package "Application" #FFF9C4 {
+    [Services] as AppServices
+    [DTOs] as DTOs
+}
+
+package "Infrastructure" #FFCCBC {
+    [Repositories] as InfraRepo
+    [DbContext] as DbContext
+    [Services] as InfraServices
+}
+
+package "Web (Razor Pages)" #E1F5FE {
+    [Public Blog] as Public
+    [Admin Panel] as Admin
+    [PWA / Static] as PWA
+}
+
+database "SQLite" as DB
+
+Public --> AppServices
+Admin --> AppServices
+AppServices --> DomainInterfaces
+AppServices --> DTOs
+DomainInterfaces <|.. InfraRepo
+InfraRepo --> DbContext
+DbContext --> DB
+Public --> PWA
+Admin --> PWA
+@enduml

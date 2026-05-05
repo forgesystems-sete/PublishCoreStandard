@@ -1,0 +1,47 @@
+@page "/posts/{slug}"
+@model PublishCoreStandard.Web.Areas.Home.Pages.Posts.DetailModel
+@{
+    ViewData["Title"] = $"{Model.Post.Title} - {Model.SiteSettings.SiteName}";
+    ViewData["Description"] = Model.Post.Title;
+}
+
+<main class="container container--narrow">
+    <article class="post-detail">
+        <header class="post-detail__header">
+            <nav class="post-detail__breadcrumb">
+                <a href="/" class="breadcrumb__link">← All posts</a>
+            </nav>
+            @if (Model.Post.Tags.Any())
+            {
+                <div class="post-detail__tags">
+                    @foreach (var tag in Model.Post.Tags)
+                    {
+                        <a href="/?tag=@Uri.EscapeDataString(tag)" class="tag">@tag</a>
+                    }
+                </div>
+            }
+            <h1 class="post-detail__title">@Model.Post.Title</h1>
+            <div class="post-detail__meta">
+                <span>@Model.Post.Author</span>
+                <span class="post-card__separator">·</span>
+                <time datetime="@Model.Post.PublishedDate.ToString("yyyy-MM-dd")">@Model.Post.PublishedDate.ToString("MMMM d, yyyy")</time>
+                <span class="post-card__separator">·</span>
+                <span>@Model.Post.ReadingTimeMinutes min read</span>
+                @if (!string.IsNullOrEmpty(Model.Post.CategoryName))
+                {
+                    <span class="post-card__separator">·</span>
+                    <a href="/?category=@Model.Post.CategorySlug">@Model.Post.CategoryName</a>
+                }
+            </div>
+            <hr class="post-detail__divider" />
+        </header>
+        <div class="post-detail__content prose">
+            @Html.Raw(Model.Post.Content)
+        </div>
+        <footer class="post-detail__footer">
+            <hr class="post-detail__divider" />
+            <a href="/" class="btn btn--secondary">← Back to all posts</a>
+        </footer>
+    </article>
+</main>
+

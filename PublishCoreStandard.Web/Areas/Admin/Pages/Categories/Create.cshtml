@@ -1,0 +1,13 @@
+@page "/Admin/Categories/Create"
+@model PublishCoreStandard.Web.Areas.Admin.Pages.Categories.CreateModel
+@{
+    ViewData["Title"] = "Create Category";
+}
+<h1>Create Category</h1>
+<form method="post">
+    <div class="form-group"><label asp-for="Category.Name"></label><input asp-for="Category.Name" class="form-control" /></div>
+    <div class="form-group"><label asp-for="Category.Slug"></label><input asp-for="Category.Slug" class="form-control" /></div>
+    <div class="form-group"><label asp-for="Category.Description"></label><textarea asp-for="Category.Description" class="form-control"></textarea></div>
+    <button type="submit" class="btn btn--primary">Create</button>
+</form>
+

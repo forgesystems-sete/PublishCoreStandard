@@ -1,0 +1,41 @@
+@page "/Admin/Login"
+@model PublishCoreStandard.Web.Areas.Admin.Pages.LoginModel
+@{
+    ViewData["Title"] = "Admin Login";
+    Layout = "_AdminLayout";
+}
+
+<div class="container--narrow" style="max-width: 480px; margin: var(--space-16) auto;">
+    <h1>🔐 Admin Login</h1>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger" style="color: red; margin-bottom: var(--space-4);">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <form method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label asp-for="Input.Email">Email</label>
+            <input asp-for="Input.Email" class="form-control" type="email" autocomplete="username" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Input.Password">Password</label>
+            <input asp-for="Input.Password" class="form-control" type="password" autocomplete="current-password" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group form-check">
+            <input asp-for="Input.RememberMe" class="form-check-input" />
+            <label asp-for="Input.RememberMe">Remember me</label>
+        </div>
+
+        <button type="submit" class="btn btn--primary" style="width:100%;">Log in</button>
+    </form>
+</div>
+

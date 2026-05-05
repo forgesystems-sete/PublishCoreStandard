@@ -1,0 +1,29 @@
+@page "/sitemap.xml"
+@model PublishCoreStandard.Web.Areas.Home.Pages.SitemapModel
+@{
+    Layout = null;
+    Response.ContentType = "application/xml";
+}
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>@Model.BaseUrl/</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>@Model.BaseUrl/about</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    @foreach (var post in Model.Posts)
+    {
+        <url>
+            <loc>@Model.BaseUrl/posts/@post.Slug</loc>
+            <lastmod>@post.PublishedDate.ToString("yyyy-MM-dd")</lastmod>
+            <changefreq>monthly</changefreq>
+            <priority>0.8</priority>
+        </url>
+    }
+</urlset>
+

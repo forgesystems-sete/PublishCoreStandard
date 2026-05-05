@@ -1,0 +1,108 @@
+@page
+@model PublishCoreStandard.Web.Areas.Home.Pages.IndexModel
+@{
+    ViewData["Title"] = Model.SiteSettings.SiteName;
+    ViewData["Description"] = Model.SiteSettings.Tagline;
+}
+
+<section class="hero">
+    <div class="container">
+        <h1 class="hero__title">@Model.SiteSettings.SiteName</h1>
+        <p class="hero__tagline">@Model.SiteSettings.Tagline</p>
+    </div>
+</section>
+
+<main class="container">
+    @* Filtro ativo *@
+    @if (!string.IsNullOrEmpty(Model.ActiveTag) || !string.IsNullOrEmpty(Model.ActiveCategory) || !string.IsNullOrEmpty(Model.SearchQuery))
+    {
+        <div class="filter-bar">
+            <span class="filter-bar__label">
+                @if (!string.IsNullOrEmpty(Model.ActiveTag))
+                {
+                    <span>Tag: <strong>@Model.ActiveTag</strong></span>
+                }
+                else if (!string.IsNullOrEmpty(Model.ActiveCategory))
+                {
+                    <span>Category: <strong>@Model.ActiveCategory</strong></span>
+                }
+                else if (!string.IsNullOrEmpty(Model.SearchQuery))
+                {
+                    <span>Search: <strong>@Model.SearchQuery</strong></span>
+                }
+            </span>
+            <a href="/" class="filter-bar__clear">✕ Clear</a>
+        </div>
+    }
+
+    @* Busca *@
+    <form method="get" class="search-form" style="margin-bottom: var(--space-8); display: flex; gap: var(--space-2);">
+        <input type="search" name="q" placeholder="Search posts..." value="@Model.SearchQuery" style="flex:1; padding: var(--space-2); border:1px solid var(--color-border); border-radius: var(--border-radius);" />
+        <button type="submit" class="btn btn--primary">Search</button>
+    </form>
+
+    @if (!Model.Posts.Any())
+    {
+        <div class="empty-state">
+            <p class="empty-state__text">No posts found.</p>
+            <a href="/" class="btn btn--primary">Back to all posts</a>
+        </div>
+    }
+    else
+    {
+        <div class="post-grid" role="list">
+            @foreach (var post in Model.Posts)
+            {
+                <article class="post-card" role="listitem">
+                    <div class="post-card__body">
+                        @if (post.Tags.Any())
+                        {
+                            <div class="post-card__tags">
+                                @foreach (var tag in post.Tags.Take(3))
+                                {
+                                    <a href="/?tag=@Uri.EscapeDataString(tag)" class="tag">@tag</a>
+                                }
+                            </div>
+                        }
+                        <h2 class="post-card__title">
+                            <a href="/posts/@post.Slug" class="post-card__link">@post.Title</a>
+                        </h2>
+                        <p class="post-card__excerpt">@post.Excerpt</p>
+                    </div>
+                    <footer class="post-card__meta">
+                        <span>@post.Author</span>
+                        <span class="post-card__separator">·</span>
+                        <time datetime="@post.PublishedDate.ToString("yyyy-MM-dd")">@post.PublishedDate.ToString("MMM d, yyyy")</time>
+                        <span class="post-card__separator">·</span>
+                        <span>@post.ReadingTimeMinutes min read</span>
+                        @if (!string.IsNullOrEmpty(post.CategoryName))
+                        {
+                            <span class="post-card__separator">·</span>
+                            <a href="/?category=@post.CategorySlug">@post.CategoryName</a>
+                        }
+                    </footer>
+                </article>
+            }
+        </div>
+
+        @* Paginação *@
+        @if (Model.TotalPages > 1)
+        {
+            <nav class="pagination">
+                @if (Model.CurrentPage > 1)
+                {
+                    <a href="@Model.GetPageUrl(Model.CurrentPage - 1)" class="pagination__link">← Prev</a>
+                }
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <a href="@Model.GetPageUrl(i)" class="pagination__link @(i == Model.CurrentPage ? "pagination__link--active" : "")">@i</a>
+                }
+                @if (Model.CurrentPage < Model.TotalPages)
+                {
+                    <a href="@Model.GetPageUrl(Model.CurrentPage + 1)" class="pagination__link">Next →</a>
+                }
+            </nav>
+        }
+    }
+</main>
+

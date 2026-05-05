@@ -1,0 +1,112 @@
+@* =============================================================
+   PublishCore Standard — Web Layer
+   _Layout.cshtml — Layout raiz com zero dependências externas,
+   meta tags de privacidade e dark mode toggle.
+   ============================================================= *@
+@using Microsoft.Extensions.Options
+@using PublishCoreStandard.Domain.Entities
+@inject IOptions<SiteSettings> SiteOptions
+@{
+    var site = SiteOptions.Value;
+    var year = DateTime.UtcNow.Year;
+    var footerText = site.FooterText.Replace("{year}", year.ToString());
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="apple-touch-icon" href="/img/icons/icon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @site.SiteName</title>
+    <meta name="description" content="@ViewData["Description"]" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Head", required: false)
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <header class="site-header">
+        <div class="container site-header__inner">
+            <a href="/" class="site-header__logo">@site.SiteName</a>
+            <nav class="site-header__nav">
+                <a href="/" class="nav-link">Blog</a>
+                <a href="/about" class="nav-link">About</a>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                    <span class="theme-toggle__icon">🌙</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container site-footer__inner">
+            <p class="site-footer__copy">@footerText</p>
+            <p class="site-footer__privacy">
+                🔒 No tracking. No analytics. No external requests.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            const html = document.documentElement;
+            const toggleBtn = document.getElementById("theme-toggle");
+            const icon = toggleBtn?.querySelector(".theme-toggle__icon");
+
+            function setTheme(theme) {
+                if (theme === "dark") {
+                    html.classList.add("dark");
+                    html.classList.remove("light");
+                    if (icon) icon.textContent = "☀️";
+                } else {
+                    html.classList.add("light");
+                    html.classList.remove("dark");
+                    if (icon) icon.textContent = "🌙";
+                }
+                localStorage.setItem("theme", theme);
+            }
+
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else {
+                const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+                setTheme(prefersDark ? "dark" : "light");
+            }
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener("click", () => {
+                    const isDark = html.classList.contains("dark");
+                    setTheme(isDark ? "light" : "dark");
+                });
+            }
+
+            window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+                if (!localStorage.getItem("theme")) {
+                    setTheme(e.matches ? "dark" : "light");
+                }
+            });
+        })();
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("/sw.js")
+                    .then(reg => console.log("✅ SW registrado", reg.scope))
+                    .catch(err => console.log("❌ SW falhou", err));
+            });
+        }
+    </script>
+</body>
+</html>

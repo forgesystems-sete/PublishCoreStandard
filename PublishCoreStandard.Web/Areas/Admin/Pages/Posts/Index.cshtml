@@ -1,0 +1,37 @@
+@page "/Admin/Posts"
+@model PublishCoreStandard.Web.Areas.Admin.Pages.Posts.IndexModel
+@{
+    ViewData["Title"] = "Manage Posts";
+}
+
+<h1>Posts</h1>
+<p>
+    <a asp-page="Create" class="btn btn--primary">Create New</a>
+</p>
+
+<table class="table" style="width:100%; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Published</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var post in Model.Posts)
+    {
+        <tr>
+            <td>@post.Title</td>
+            <td>@post.Author</td>
+            <td>@(post.IsPublished ? "✅" : "❌")</td>
+            <td>@post.PublishedDate.ToString("yyyy-MM-dd")</td>
+            <td>
+                <a asp-page="Edit" asp-route-id="@post.Id">Edit</a> |
+                <a asp-page="Delete" asp-route-id="@post.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

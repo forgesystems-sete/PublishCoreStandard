@@ -1,0 +1,20 @@
+@page "/Admin"
+@model PublishCoreStandard.Web.Areas.Admin.Pages.IndexModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1>Dashboard</h1>
+<p>Welcome, @User.Identity?.Name!</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-top: var(--space-6);">
+    <div class="card" style="border:1px solid var(--color-border); padding:var(--space-4); border-radius:var(--border-radius);">
+        <h3>@Model.PostCount</h3>
+        <p>Total Posts</p>
+        <a asp-page="/Posts/Index" class="btn">Manage</a>
+    </div>
+    <div class="card" style="border:1px solid var(--color-border); padding:var(--space-4); border-radius:var(--border-radius);">
+        <h3>@Model.CategoryCount</h3>
+        <p>Categories</p>
+        <a asp-page="/Categories/Index" class="btn">Manage</a>
+    </div>
+</div>

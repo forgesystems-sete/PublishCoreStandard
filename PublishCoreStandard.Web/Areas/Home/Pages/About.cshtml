@@ -1,0 +1,33 @@
+@page "/about"
+@model PublishCoreStandard.Web.Areas.Home.Pages.AboutModel
+@{
+    ViewData["Title"] = "About";
+    ViewData["Description"] = "About PublishCore Standard";
+}
+
+<main class="container container--narrow">
+    <article class="post-detail">
+        <header class="post-detail__header">
+            <nav class="post-detail__breadcrumb">
+                <a href="/" class="breadcrumb__link">← Back to blog</a>
+            </nav>
+            <h1 class="post-detail__title">About PublishCore Standard</h1>
+            <hr class="post-detail__divider" />
+        </header>
+
+        <div class="post-detail__content prose">
+            <p><strong>PublishCore Standard</strong> is a clean, privacy-first blog template built with .NET 8 and Razor Pages.</p>
+            <p>It follows Clean Architecture principles and includes:</p>
+            <ul>
+                <li>SQLite database (zero configuration)</li>
+                <li>Dark mode with CSS variables</li>
+                <li>Full markdown support in admin panel</li>
+                <li>No external dependencies — everything runs locally</li>
+                <li>Ready for deploy on Railway, Render, Fly.io or any VPS</li>
+            </ul>
+            <p>This template is ideal for developers who want a fast, secure, and privacy-respecting blog without the bloat of traditional CMS platforms.</p>
+            <hr />
+            <p><small>Version 1.0.0 — <a href="https://github.com/forgelabs/publishcore" target="_blank">GitHub</a></small></p>
+        </div>
+    </article>
+</main>
